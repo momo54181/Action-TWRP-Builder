@@ -1,4 +1,4 @@
-name: Recovery Build Legacy
+name: Recovery Build (Legacy)
 
 on:
   workflow_dispatch:
@@ -10,19 +10,19 @@ on:
       MANIFEST_BRANCH:
         description: 'MANIFEST_BRANCH'
         required: true
-        default: 'twrp-7.1'
+        default: 'twrp-9.0'
       DEVICE_TREE_URL:
         description: 'DEVICE_TREE_URL'
         required: true
-        default: 'https://github.com/ycly2333/android_device_EEBBK_H3000S-twrp'
+        default: 'https://github.com/gjgh93620-cpu/android_device_eebbk_H100'
       DEVICE_TREE_BRANCH:
         description: 'DEVICE_TREE_BRANCH'
         required: true
-        default: 'twrp-7.1'
+        default: 'main'
       DEVICE_PATH:
         description: 'DEVICE_PATH'
         required: true
-        default: 'device/EEBBK/H3000S'
+        default: 'device/eebbk/H100'
       COMMON_TREE_URL:
         description: 'COMMON_TREE_URL (if no common tree, leave blank)'
         required: false
@@ -32,11 +32,11 @@ on:
       DEVICE_NAME:
         description: 'DEVICE_NAME'
         required: true
-        default: 'H3000S'
+        default: 'H100'
       MAKEFILE_NAME:
         description: 'MAKEFILE_NAME'
         required: true
-        default: 'omni_H3000S'
+        default: 'omni_H100'
       BUILD_TARGET:
         description: 'BUILD_TARGET'
         required: true
@@ -77,10 +77,10 @@ jobs:
         DEBIAN_FRONTEND=noninteractive sudo apt install -yq \
             linux-modules-extra-$(uname -r) \
             gperf gcc-multilib gcc-10-multilib g++-multilib g++-10-multilib \
-            libc6-dev x11proto-core-dev libx11-dev tree lib32z-dev libgl1-mesa-dev libxml2-utils \
-            xsltproc bc ccache lib32readline-dev lib32z1-dev liblz4-tool libsdl1.2-dev \
-            libwxgtk3.2-dev libxml2 lzop pngcrush schedtool squashfs-tools \
-            imagemagick libbz2-dev lzma ncftp qemu-user-static libstdc++-10-dev libncurses6 python3 tar
+            libc6-dev lib32ncurses5-dev x11proto-core-dev libx11-dev tree lib32z-dev libgl1-mesa-dev libxml2-utils \
+            xsltproc bc ccache lib32readline-dev lib32z1-dev liblz4-tool libncurses5-dev libsdl1.2-dev \
+            libwxgtk3.0-gtk3-dev libxml2 lzop pngcrush schedtool squashfs-tools \
+            imagemagick libbz2-dev lzma ncftp qemu-user-static libstdc++-10-dev libncurses5 python3 tar
 
     - name: Install OpenJDK
       uses: actions/setup-java@v4
@@ -146,11 +146,13 @@ jobs:
 
     - name: Switch to Python2
       run: |
-        sudo apt -y install python
+        sudo apt-get install -y python2
+        wget https://bootstrap.pypa.io/pip/2.7/get-pip.py
+        python2 get-pip.py
         sudo rm -rf /usr/bin/python
         sudo ln -s /usr/bin/python2 /usr/bin/python
         # sudo ln -s /usr/bin/python3 /usr/bin/python3
-      continue-on-error: true
+      continue-on-error: false
 
     - name: Building recovery
       run: |
